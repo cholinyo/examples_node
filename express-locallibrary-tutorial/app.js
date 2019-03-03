@@ -6,9 +6,18 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var catalogRouter = require('./routes/catalog');  //Import routes for "catalog" area of site
 
 
 var app = express(); //Creamos el servidor
+
+//Set up mongoose connection
+var mongoose = require('mongoose');
+var mongoDB = 'mongodb://localhost:27017/test';
+mongoose.connect(mongoDB,{ useNewUrlParser: true });
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));  //Ruta de las templates
@@ -22,6 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);  //app
 app.use('/users', usersRouter);
+app.use('/catalog', catalogRouter);  // Add catalog routes to middleware chain.
+
 
 
 // catch 404 and forward to error handler
